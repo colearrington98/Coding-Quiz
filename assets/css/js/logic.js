@@ -52,3 +52,113 @@ function getQuestion() {
     });
 }
 
+// function to check the answer
+function questionClick() {
+    if (this.value !== questions[current].answer) {
+        time -= 15;
+
+        if (time < 0) {
+            time = 0;
+        }
+
+        timerE1.textContent = time;
+
+        feedbackE1.textContent = "Wrong!";
+        wrong.play();
+    } else {
+        feedbackE1.textContent = "Correct!";
+        correct.play();
+    }
+
+    feedbackE1.setAttribute("class", "feedback");
+    setTimeout(function() {
+        feedbackE1.setAttribute("class", "feedback hide");
+    }, 1000);
+
+    current++;
+
+    if (current === questions.length) {
+        quizEnd();
+    } else {
+        getQuestion();
+    }
+}
+
+// function to end the quiz
+function quizEnd() {
+    clearInterval(timer);
+
+    var endScreenE1 = document.getElementById("end-screen");
+    endScreenE1.removeAttribute("class");
+
+    var finalScoreE1 = document.getElementById("final-score");
+    finalScoreE1.textContent = time;
+
+    questionsE1.setAttribute("class", "hide");
+}
+
+// function to save the score
+function saveHighscore() {
+    var initials = initialsE1.value.trim();
+
+    if (initials !== "") {
+        var highscores = JSON.parse(window.localStorage.getItem("highscores")) || [];
+
+        var newScore = {
+            score: time,
+            initials: initials
+        };
+
+        highscores.push(newScore);
+        window.localStorage.setItem("highscores", JSON.stringify(highscores));
+
+        window.location.href = "highscores.html";
+    }
+}
+
+// function to check for enter key
+function checkForEnter(event) {
+    if (event.key === "Enter") {
+        saveHighscore();
+    }
+}
+
+// function to clock tick
+function clockTick() {
+    time--;
+    timerE1.textContent = time;
+
+    if (time <= 0) {
+        quizEnd();
+    }
+}
+
+// submit button
+submitBtn.onclick = saveHighscore;
+
+// start button
+startBtn.onclick = start;
+
+// initials input
+initialsE1.onkeyup = checkForEnter;
+
+// user clicks on elements containing choices
+choicesE1.oneclick = questionClick;
+
+initialsE1.onkeyup = checkForEnter;
+
+function addNumbers(number_one, number_two) {
+    return number_one + number_two;
+}
+
+var num1 = prompt('first number')
+var num2 = prompt('second number')
+
+var result = addNumbers(num1, num2)
+
+alert(result)
+
+
+
+
+
